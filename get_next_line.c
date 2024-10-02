@@ -6,7 +6,7 @@
 /*   By: jalcausa <jalcausa@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 23:26:28 by jalcausa          #+#    #+#             */
-/*   Updated: 2024/10/02 00:27:03 by jalcausa         ###   ########.fr       */
+/*   Updated: 2024/10/02 10:26:52 by jalcausa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,25 @@ static char	*read_from_fd(int fd, char *buffer, char *buffer_remain)
 {
 	char	*tmp;
 	ssize_t	bytes_read;
-	int		end;
-	
+
 	bytes_read = 1;
-	end = 0;
 	while (bytes_read > 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (NULL);
-		if (bytes_read != 0)
 		{
-			buffer[bytes_read] = '\0';
-			if (!buffer_remain)
-				buffer_remain = ft_strdup("");
-			tmp = buffer_remain;
-			buffer_remain = ft_strjoin(tmp, buffer);
-			free (tmp);
-			if (ft_strchr(buffer, '\n'))
-				end = 1;
+			return (NULL);
 		}
+		if (bytes_read == 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		if (!buffer_remain)
+			buffer_remain = ft_strdup("");
+		tmp = buffer_remain;
+		buffer_remain = ft_strjoin(tmp, buffer);
+		free (tmp);
+		if (ft_strchr(buffer, '\n'))
+			break ;
 	}
 	return (buffer_remain);
 }
@@ -44,7 +43,7 @@ static char	*trim_line(char *buffer)
 {
 	char	*buffer_remain;
 	int		i;
-	
+
 	i = 0;
 	while (buffer[i] && buffer[i] != '\n')
 		++i;
@@ -71,11 +70,14 @@ char	*get_next_line(int fd)
 	line = read_from_fd(fd, buffer, buffer_remain);
 	free(buffer);
 	if (!line)
+	{
+		free(buffer_remain);
 		return (NULL);
+	}
 	buffer_remain = trim_line(line);
 	return (line);
 }
-
+/*
 int main() {
     int fd;
     char *next_line;
@@ -101,4 +103,4 @@ int main() {
 
     return 0;
 }
-
+*/
