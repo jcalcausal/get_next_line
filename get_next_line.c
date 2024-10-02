@@ -6,7 +6,7 @@
 /*   By: jalcausa <jalcausa@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 23:26:28 by jalcausa          #+#    #+#             */
-/*   Updated: 2024/10/02 10:26:52 by jalcausa         ###   ########.fr       */
+/*   Updated: 2024/10/02 11:27:49 by jalcausa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ static char	*read_from_fd(int fd, char *buffer, char *buffer_remain)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-		{
 			return (NULL);
-		}
 		if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
@@ -51,7 +49,7 @@ static char	*trim_line(char *buffer)
 		return (NULL);
 	buffer_remain = ft_substr(buffer, i + 1, ft_strlen(buffer) - i);
 	if (!buffer_remain)
-		free(buffer_remain);
+		return (NULL);
 	buffer[i + 1] = '\0';
 	return (buffer_remain);
 }
@@ -72,6 +70,7 @@ char	*get_next_line(int fd)
 	if (!line)
 	{
 		free(buffer_remain);
+		buffer_remain = NULL;
 		return (NULL);
 	}
 	buffer_remain = trim_line(line);
